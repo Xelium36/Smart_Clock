@@ -52,9 +52,36 @@ const alarms = [
   }
 ];
 
+const newAlarm = {
+    time: "10:00",
+    name: "Go piscine",
+    days: ["Dimanche"],
+    snooze: {
+      enabled: false,
+      duration: 0
+    }
+  };
+
+  alarms.push(newAlarm);
+
 for (const [index, alarm] of alarms.entries()){
     console.log(`Alarm ${index+1} : ${alarm.name} at ${alarm.time}`);
 }
 
-alarms.push("9h45","Emerging" )
+function findAlarm(time) {
+  return alarms.filter(alarm => alarm.time.includes(time));
+}
 
+console.log(findAlarm("9:30"));
+
+const user = {
+  name: "Chloé",
+  sleepGoal: 8, // heures
+  sleepHistory: ["7:00", "7:10", "7:45"],
+  preferences: {
+    wakeSound: "forest",
+    dayType; "work"
+  }
+};
+
+//#endregion
