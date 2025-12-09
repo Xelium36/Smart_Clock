@@ -1,19 +1,18 @@
-// src/app.js
+/**
+ * App entrypoint.
+ * We keep the HTTP listener separate from the Express app instance so
+ * tests can import `app` without opening a real port.
+ */
+import app from "./app.js";
+import {connectToDb} from "./db/mongo.js";
 
-import express from 'express';
-import usersRouter from './routes/routes/user.route.js';
+const PORT = process.env.PORT || 3000;
 
-const app = express();
-const PORT = 3000;
+async function start() {
+  await connectToDb();
+  app.listen(PORT,() => {
+    console.log('API running at http://localhost:${PORT}');
+  });
+}
 
-// Middleware pour analyser le corps des requêtes en JSON
-app.use(express.json());
-
-// 🔗 Brancher les routes des utilisateurs
-// Toutes les requêtes vers /api/v1/users vont vers usersRouter
-app.use('/api/v1/users', usersRouter);
-
-// Démarrer le serveur
-app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
-});
+start();
