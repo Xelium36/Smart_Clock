@@ -36,3 +36,18 @@ export function deleteUser(userId) {
     users.splice(userIndex, 1);
     return true;
 }
+
+import mongoose from " mongoose ";
+
+const userSchema = new mongoose.Schema (
+{
+Uid : { type : Number , required : true } ,
+Nom : { type : String , required : true } ,
+Prenom : { type : String , required : true },
+Date_de_naissance : { type : Date , required : true} ,
+Email : { type : String , required : true} ,
+Mot_de_passe : { type : String , required : true },
+Date_de_creation : { type : Date , default : Date . now }
+}
+) ;
+export default mongoose . model (" Users ", userSchema , " Users ") ;

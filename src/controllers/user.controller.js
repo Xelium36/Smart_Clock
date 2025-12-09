@@ -44,3 +44,22 @@ export function deleteOneUser(req, res) {
     }
     res.status(204).send(); 
 }
+
+import User from "../ models / user . model .js";
+export async function listUser ( req , res , next ) {
+    try {
+        const user = await User . find () . lean () ;
+        res . status (200) . json ( docs ) ;
+    } catch ( err ) {
+        next ( err ) ;
+    }
+}
+export async function createUser ( req , res , next ) {
+    try {
+        const { Uid,Nom,Prenom,Date_de_naissance,Email,Mot_de_passe,Date_de_creation } = req . body ;
+        const created = await User . create ({ Uid,Nom,Prenom,Date_de_naissance,Email,Mot_de_passe,Date_de_creation }) ;
+        res . status (201) . json ( created ) ;
+    } catch ( e ) {
+        next ( e ) ;
+    }
+}
