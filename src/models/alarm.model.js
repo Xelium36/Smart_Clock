@@ -1,4 +1,43 @@
-let alarms = []; 
+import mongoose from "mongoose";
+
+const alarmSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
+    time_start_interv: {
+      type: String, 
+      required: true,
+    },
+    duration_interv: {
+      type: String, 
+      required: true,
+    },
+    vibration: {
+      type: Boolean,
+      default: true,
+    },
+    enabled: {
+      type: Boolean,
+      default: true,
+    },
+    snooze:{
+      type: Boolean,
+      default: false,
+    }
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const Alarm = mongoose.model("Alarm", alarmSchema);
 
 export function getAllAlarmsByUser(userId) {
   return alarms.filter(a => a.userId === userId);
