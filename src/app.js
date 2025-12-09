@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { errorHandler } from "./utils/errorHandler.js";
+import dayTypesRouter from './routes/api/daytypes.route.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,5 +35,6 @@ if (fs.existsSync(autoDir)) {
 
 // Global error middleware last
 app.use(errorHandler);
+app.use('/api/v1/daytypes', dayTypesRouter);
 
 export default app;
