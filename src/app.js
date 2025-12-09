@@ -1,4 +1,17 @@
-// src/app.js
+/**
+ * Express app configuration.
+ * Responsibilities:
+ *  - Base routes (/, /health)
+ *  - Auto-mount all routers in src/routes/auto/*.route.js
+ *  - Global error handler (consistent JSON for errors)
+ */
+import express from "express";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
+import { errorHandler } from "./utils/errorHandler.js";
+import musicRouter from './routes/api/music.route.js';
+import alarmsRouter from './routes/api/alarm.route.js';
 
 import express from 'express';
 import dotenv from 'dotenv';
@@ -13,6 +26,7 @@ import { boomHandler, errorHandler } from './middlewares/errorHandler.js'; // Mi
 dotenv.config();
 
 const app = express();
+app.use(express.json());
 
 // --- 1. Middleware Global ---
 // Permet à Express de lire le corps des requêtes en JSON
@@ -24,8 +38,11 @@ app.use(cors());
 // Montez vos routes spécifiques (ici, les routes CRUD pour l'entité User)
 app.use('/api/users', userRoutes); 
 
-// --- 3. Routes Requises par les Tests ---
-// Ces routes sont nécessaires pour faire passer les tests /info, /version et /boom
+// Global error middleware last
+app.use(errorHandler);
+app.use('/api/v1/users/:userId/alarms', alarmsRouter);
+
+app.use('/api/v1/musics', musicRouter);
 
 // GET /version
 app.get('/version', (req, res) => {
