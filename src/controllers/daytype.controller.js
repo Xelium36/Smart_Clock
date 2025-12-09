@@ -1,50 +1,33 @@
+import DayType from "../models/daytype.model.js";
 
-import {
-  getAllDayTypes,
-  getDayType,
-  createDayType,
-  updateDayType,
-  deleteDayType
-} from '../models/daytype.model.js';
-
-export function listDayTypes(req, res) {
-  res.json(getAllDayTypes());
+export async function listDayTypes(req, res) {
+  const list = await DayType.find();
+  res.json(list);
 }
 
-export function getOneDayType(req, res) {
-  const { dayTypeId } = req.params;
-  const dt = getDayType(dayTypeId);
-
-  if (!dt) {
-    return res.status(404).json({ error: "DayType not found" });
-  }
-
-  res.json(dt);
+export async function getOneDayType(req, res) {
+  const item = await DayType.findById(req.params.dayTypeId);
+  if (!item) return res.status(404).json({ error: "DayType not found" });
+  res.json(item);
 }
 
-export function createOneDayType(req, res) {
-  const created = createDayType(req.body);
+export async function createOneDayType(req, res) {
+  const created = await DayType.create(req.body);
   res.status(201).json(created);
 }
 
-export function updateOneDayType(req, res) {
-  const { dayTypeId } = req.params;
-  const updated = updateDayType(dayTypeId, req.body);
-
-  if (!updated) {
-    return res.status(404).json({ error: "DayType not found" });
-  }
-
+export async function updateOneDayType(req, res) {
+  const updated = await DayType.findByIdAndUpdate(
+    req.params.dayTypeId,
+    req.body,
+    { new: true }
+  );
+  if (!updated) return res.status(404).json({ error: "DayType not found" });
   res.json(updated);
 }
 
-export function deleteOneDayType(req, res) {
-  const { dayTypeId } = req.params;
-  const ok = deleteDayType(dayTypeId);
-
-  if (!ok) {
-    return res.status(404).json({ error: "DayType not found" });
-  }
-
+export async function deleteOneDayType(req, res) {
+  const deleted = await DayType.findByIdAndDelete(req.params.dayTypeId);
+  if (!deleted) return res.status(404).json({ error: "DayType not found" });
   res.status(204).send();
 }
