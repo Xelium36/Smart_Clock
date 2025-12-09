@@ -14,3 +14,5 @@ async function start() {
     console.log('API running at http://localhost:${PORT}');
   });
 }
+
+start();
