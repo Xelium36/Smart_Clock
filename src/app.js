@@ -11,11 +11,13 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { errorHandler } from "./utils/errorHandler.js";
 import musicRouter from './routes/api/music.route.js';
+import alarmsRouter from './routes/api/alarm.route.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(express.json());
 
 // Simple root + health endpoints
 app.get("/", (_req, res) => res.json({ ok: true, message: "Hello from CI/CD demo 👋" }));
@@ -35,6 +37,7 @@ if (fs.existsSync(autoDir)) {
 
 // Global error middleware last
 app.use(errorHandler);
+app.use('/api/v1/users/:userId/alarms', alarmsRouter);
 
 app.use('/api/v1/musics', musicRouter);
 
