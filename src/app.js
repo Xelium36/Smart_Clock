@@ -10,8 +10,20 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { errorHandler } from "./utils/errorHandler.js";
+
 import musicRouter from './routes/api/music.route.js';
 import alarmsRouter from './routes/api/alarm.route.js';
+
+//import alarmsRouter from './routes/api/alarm.route.js';
+import * as dotenv from "dotenv";
+dotenv.config({ path: ".env.local" }); // charge le fichier privé si présent
+dotenv.config(); // fallback pour .env
+
+import mongoose from "mongoose";
+import dayTypesRouter from "./routes/api/daytypes.route.js";
+
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -76,11 +88,18 @@ if (fs.existsSync(autoDir)) {
     if (router) app.use("/", router);
   }
 }
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("🟢 Connected to MongoDB Atlas"))
+  .catch(err => console.error("🔴 MongoDB connection error:", err));
 
 // Global error middleware last
+app.use("/api/v1/daytypes", dayTypesRouter);
 app.use(errorHandler);
+
 app.use('/api/v1/users/:userId/alarms', alarmsRouter);
 
 app.use('/api/v1/musics', musicRouter);
+
 
 export default app;
