@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { errorHandler } from "./utils/errorHandler.js";
+import musicRouter from './routes/api/music.route.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,5 +35,7 @@ if (fs.existsSync(autoDir)) {
 
 // Global error middleware last
 app.use(errorHandler);
+
+app.use('/api/v1/musics', musicRouter);
 
 export default app;
