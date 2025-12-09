@@ -1,46 +1,31 @@
-// src/controllers/music.controller.js
+// src/routes/api/music.route.js
 
+import { Router } from 'express';
 import {
-  getAllMusics,
-  getMusicById,
-  createMusic,
-  updateMusic,
-  deleteMusic
-} from '../../models/music.model.js';
+  listMusics,
+  getOneMusic,
+  createOneMusic,
+  updateOneMusic,
+  deleteOneMusic
+} from '../../controllers/music.controller.js';
 
-export function listMusics(req, res) {
-  res.json(getAllMusics());
-}
+const router = Router();
 
-export function getOneMusic(req, res) {
-  const { musicId } = req.params;
-  const music = getMusicById(musicId);
+/**
+ * GET /api/v1/musics
+ *  */ 
+router.get('/', listMusics);
 
-  if (!music) return res.status(404).json({ error: "Music not found" });
+// GET /api/v1/musics/:musicId
+router.get('/:musicId', getOneMusic);
 
-  res.json(music);
-}
+// POST /api/v1/musics
+router.post('/', createOneMusic);
 
-export function createOneMusic(req, res) {
-  // On récupère name et duration depuis le body
-  const created = createMusic(req.body);
-  res.status(201).json(created);
-}
+// PATCH /api/v1/musics/:musicId
+router.patch('/:musicId', updateOneMusic);
 
-export function updateOneMusic(req, res) {
-  const { musicId } = req.params;
-  const updated = updateMusic(musicId, req.body);
+// DELETE /api/v1/musics/:musicId
+router.delete('/:musicId', deleteOneMusic);
 
-  if (!updated) return res.status(404).json({ error: "Music not found" });
-
-  res.json(updated);
-}
-
-export function deleteOneMusic(req, res) {
-  const { musicId } = req.params;
-  const ok = deleteMusic(musicId);
-
-  if (!ok) return res.status(404).json({ error: "Music not found" });
-
-  res.status(204).send();
-}
+export default router;
