@@ -35,6 +35,10 @@ if (fs.existsSync(autoDir)) {
   }
 }
 
+const uploadsPath = path.resolve(__dirname, "..", "uploads");
+
+app.use("/uploads", express.static(uploadsPath));
+
 // Global error middleware last
 app.use(errorHandler);
 app.use('/api/v1/users/:userId/alarms', alarmsRouter);
