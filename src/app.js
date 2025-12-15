@@ -19,8 +19,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(express.json());
 
-// Simple root + health endpoints
-app.get("/", (_req, res) => res.json({ ok: true, message: "Hello from CI/CD demo 👋" }));
+const publicPath = path.resolve(__dirname, "..", "public");
+app.use(express.static(publicPath));
+console.log("Serving public from:", publicPath);
+
 app.get("/health", (_req, res) => res.status(200).send("OK"));
 
 // Auto-mount all routers placed under src/routes/auto
@@ -36,13 +38,16 @@ if (fs.existsSync(autoDir)) {
 }
 
 const uploadsPath = path.resolve(__dirname, "..", "uploads");
-
 app.use("/uploads", express.static(uploadsPath));
+console.log("Serving uploads from:", uploadsPath);
 
-// Global error middleware last
-app.use(errorHandler);
 app.use('/api/v1/users/:userId/alarms', alarmsRouter);
-
 app.use('/api/v1/musics', musicRouter);
+
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(publicPath, "index.html"));
+});
+
+app.use(errorHandler);
 
 export default app;

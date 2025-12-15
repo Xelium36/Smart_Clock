@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Clock – Upload musique</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>🎵 Ajouter une musique</h1>
+
+  <form id="musicForm">
+    <input
+      type="text"
+      id="name"
+      placeholder="Nom de la musique"
+      required
+    />
+
+    <div id="dropzone">
+      <p>Glissez-déposez un fichier MP3 ici</p>
+      <p>ou cliquez pour sélectionner</p>
+      <input type="file" id="fileInput" accept=".mp3,audio/*" hidden />
+    </div>
+
+    <button type="submit">Envoyer</button>
+  </form>
+
+  <pre id="result"></pre>
+
+  <script src="app.js"></script>
+</body>
+</html>
