@@ -1,31 +1,20 @@
-// src/routes/api/music.route.js
-
-import { Router } from 'express';
+import { Router } from "express";
+import { uploadMp3 } from "../../middlewares/upload.js";
 import {
   listMusics,
   getOneMusic,
   createOneMusic,
   updateOneMusic,
   deleteOneMusic
-} from '../../controllers/music.controller.js';
+} from "../../controllers/music.controller.js";
 
 const router = Router();
 
-/**
- * GET /api/v1/musics
- *  */ 
-router.get('/', listMusics);
+router.get("/", listMusics);
+router.get("/:musicId", getOneMusic);
+router.post("/", uploadMp3.single("file"), createOneMusic);
 
-// GET /api/v1/musics/:musicId
-router.get('/:musicId', getOneMusic);
-
-// POST /api/v1/musics
-router.post('/', createOneMusic);
-
-// PATCH /api/v1/musics/:musicId
-router.patch('/:musicId', updateOneMusic);
-
-// DELETE /api/v1/musics/:musicId
-router.delete('/:musicId', deleteOneMusic);
+router.patch("/:musicId", updateOneMusic);
+router.delete("/:musicId", deleteOneMusic);
 
 export default router;

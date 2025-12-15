@@ -1,4 +1,4 @@
 node_modules
 .env.local
-
+uploads
 package-lock.json
