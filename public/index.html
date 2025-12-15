@@ -1,66 +1,19 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>GET Musics</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
 <body>
   <header class="topbar">
     <h1>🎵 Smart Clock – Musiques</h1>
-    <nav class="tabs">
-      <button class="tab active" data-view="upload">POST (Upload)</button>
-      <button class="tab" data-view="list">GET (Liste)</button>
-      <button class="tab" data-view="update">PATCH (Update)</button>
+    <nav class="nav">
+      <a href="/upload.html">POST (Upload)</a>
+      <a class="active" href="/list.html">GET (Liste)</a>
+      <a href="/update.html">PATCH (Update)</a>
     </nav>
   </header>
-
-  <!-- VIEW: UPLOAD -->
-  <section class="view" id="view-upload">
-    <h2>Ajouter une musique</h2>
-
-    <form id="musicForm">
-      <label>
-        Nom
-        <input type="text" id="name" placeholder="Nom de la musique" required />
-      </label>
-
-      <div id="dropzone">
-        <p>Glissez-déposez un fichier MP3 ici</p>
-        <p>ou cliquez pour sélectionner</p>
-        <input type="file" id="fileInput" accept=".mp3,audio/*" hidden />
-      </div>
-
-      <button type="submit">Envoyer</button>
-    </form>
-
-    <pre id="uploadResult"></pre>
-  </section>
-
-  <!-- VIEW: LIST -->
-  <section class="view hidden" id="view-list">
-    <div class="row">
-      <h2>Liste des musiques</h2>
-      <button id="refreshBtn">Rafraîchir</button>
-    </div>
-
-    <div id="listStatus" class="status"></div>
-    <ul id="musicList" class="list"></ul>
-  </section>
-
-  <!-- VIEW: UPDATE -->
-  <section class="view hidden" id="view-update">
-    <h2>Mettre à jour une musique</h2>
-
-    <form id="updateForm">
-      <label>
-        ID (Mongo _id)
-        <input type="text" id="updateId" placeholder="ex: 693fe6ef..." required />
-      </label>
-
-      <label>
-        Nouveau nom
-        <input type="text" id="updateName" placeholder="Nouveau nom" />
-      </label>
-
-      <button type="submit">Mettre à jour</button>
-    </form>
-
-    <pre id="updateResult"></pre>
-  </section>
 
   <script src="app.js"></script>
 </body>
