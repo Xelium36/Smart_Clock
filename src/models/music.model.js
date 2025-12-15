@@ -1,49 +1,82 @@
-// Emplacement: src/models/music.model.js
+import { ObjectId } from "mongodb";
+import { getDb } from "../db/mongo.js";
 
-let musics = []; // A remplacer pour DB
+const COLLECTION = "musics";
 
 /**
- * Retourne toutes les musiques
+ * GET all musics
  */
-export function getAllMusics() {
-  return musics;
+export async function getAllMusics() {
+  const db = getDb();
+  return db.collection(COLLECTION).find().toArray();
 }
 
 /**
- * Retourne une musique spécifique par son ID
- *  */ 
-export function getMusicById(musicId) {
-  return musics.find(m => m.id === musicId);
+ * GET by id
+ */
+export async function getMusicById(musicId) {
+  const db = getDb();
+
+  if (!ObjectId.isValid(musicId)) return null;
+
+  return db.collection(COLLECTION).findOne({
+    _id: new ObjectId(musicId),
+  });
 }
 
 /**
- * Crée une nouvelle musique. Data attendu de la forme (à voir si on change) : { name: string, duration: string/number }
+ * CREATE
  */
-export function createMusic(data) {
-  const newMusic = { 
-    id: Date.now().toString(), // Génération d'ID simple
-    ...data 
+export async function createMusic({ name, fileUrl, mime, size }) {
+  const db = getDb();
+
+  const doc = {
+    name,
+    fileUrl,
+    mime,
+    size,
+    createdAt: new Date(),
   };
-  musics.push(newMusic);
-  return newMusic;
+
+  const result = await db.collection(COLLECTION).insertOne(doc);
+
+  return { _id: result.insertedId, ...doc };
 }
 
 /**
- * Met à jour une musique existante
- *  */ 
-export function updateMusic(musicId, updates) {
-  const idx = musics.findIndex(m => m.id === musicId);
-  if (idx === -1) return null;
-  
-  musics[idx] = { ...musics[idx], ...updates };
-  return musics[idx];
+ * UPDATE (safe fields only)
+ */
+export async function updateMusic(musicId, updates) {
+  const db = getDb();
+
+  if (!ObjectId.isValid(musicId)) return null;
+
+  const allowed = {};
+  if (updates.name) allowed.name = updates.name;
+  if (updates.fileUrl) allowed.fileUrl = updates.fileUrl;
+
+  if (Object.keys(allowed).length === 0) return null;
+
+  const result = await db.collection(COLLECTION).findOneAndUpdate(
+    { _id: new ObjectId(musicId) },
+    { $set: allowed },
+    { returnDocument: "after" }
+  );
+
+  return result.value;
 }
 
 /**
- * Supprime une musique
- *  */ 
-export function deleteMusic(musicId) {
-  const before = musics.length;
-  musics = musics.filter(m => m.id !== musicId);
-  return musics.length < before;
+ * DELETE
+ */
+export async function deleteMusic(musicId) {
+  const db = getDb();
+
+  if (!ObjectId.isValid(musicId)) return false;
+
+  const result = await db.collection(COLLECTION).deleteOne({
+    _id: new ObjectId(musicId),
+  });
+
+  return result.deletedCount === 1;
 }
