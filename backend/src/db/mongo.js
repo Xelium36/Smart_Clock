@@ -1,15 +1,23 @@
-import {MongoClient} from "mongodb";
-import dotenv from "dotenv";
-dotenv.config();
+import { MongoClient } from "mongodb";
 
-const client = new MongoClient (process.env.MONGO_URI) ;
+const uri = process.env.MONGO_URI;
+
+if (!uri) {
+  throw new Error("MONGO_URI est undefined. Vérifie ton fichier .env");
+}
+
+const client = new MongoClient(uri);
 let db;
 
-export async function connectToDb(){
-await client.connect();
-db = client.db();
-console.log("Connected to MongoDB :", db.databaseName) ;
+export async function connectToDb() {
+  await client.connect();
+  db = client.db();
+  console.log("Connected to MongoDB :", db.databaseName);
 }
+
 export function getDb() {
-return db;
+  if (!db) {
+    throw new Error("Database not initialized. Call connectToDb() first.");
+  }
+  return db;
 }

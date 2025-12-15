@@ -34,3 +34,4 @@ if (fs.existsSync(autoDir)) {
 }
 
 app.use(errorHandler);
+export default app;
