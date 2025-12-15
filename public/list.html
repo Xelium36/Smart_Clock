@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>GET Musics</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎵 Smart Clock – Musiques</h1>
+    <nav class="nav">
+      <a href="/upload.html">POST (Upload)</a>
+      <a class="active" href="/list.html">GET (Liste)</a>
+      <a href="/update.html">PATCH (Update)</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="row">
+      <h2>Liste des musiques</h2>
+      <button id="refreshBtn" type="button">Rafraîchir</button>
+    </div>
+
+    <div id="listStatus" class="status"></div>
+    <ul id="musicList" class="list"></ul>
+  </main>
+
+  <script src="/list.js"></script>
+</body>
+</html>

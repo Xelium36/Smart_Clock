@@ -44,9 +44,7 @@ console.log("Serving uploads from:", uploadsPath);
 app.use('/api/v1/users/:userId/alarms', alarmsRouter);
 app.use('/api/v1/musics', musicRouter);
 
-app.get("/", (_req, res) => {
-  res.sendFile(path.join(publicPath, "index.html"));
-});
+app.get("/", (_req, res) => res.sendFile(path.join(publicPath, "upload.html")));
 
 app.use(errorHandler);
 

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>PATCH Music</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <h1>🎵 Smart Clock – Musiques</h1>
+    <nav class="nav">
+      <a href="/upload.html">POST (Upload)</a>
+      <a href="/list.html">GET (Liste)</a>
+      <a class="active" href="/update.html">PATCH (Update)</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2>Mettre à jour une musique</h2>
+
+    <form id="updateForm">
+      <label>
+        ID (Mongo _id)
+        <input type="text" id="updateId" placeholder="ex: 693fe6ef..." required />
+      </label>
+
+      <label>
+        Nouveau nom
+        <input type="text" id="updateName" placeholder="Nouveau nom" />
+      </label>
+
+      <button type="submit">Mettre à jour</button>
+    </form>
+
+    <pre id="updateResult"></pre>
+  </main>
+
+  <script src="/update.js"></script>
+</body>
+</html>
