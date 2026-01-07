@@ -1,37 +1,34 @@
 import express from 'express';
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
-import { errorHandler } from './utils/errorHandler.js';
+import cors from 'cors';
+import { connectToDb } from './db/mongo.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const require = createRequire(import.meta.url);
+// Imports des routes
+import userRouter from './routes/api/user.route.js';
+import dayTypeRouter from './routes/api/daytype.route.js';
+import musicRouter from './routes/api/music.route.js';
+import alarmRouter from './routes/api/alarm.route.js';
+import genreRouter from './routes/api/genre.route.js';
+import seedRouter from './routes/api/seed.route.js';
 
 const app = express();
 
-// Simple root + health endpoints
-app.get('/api', (_req, res) =>
-  res.json({ ok: true, message: 'Hello from CI/CD demo 👋' })
-);
+// Middleware
+app.use(cors());
+app.use(express.json());
 
-app.get('/health', (_req, res) => res.status(200).send('OK'));
+// Connexion DB
+connectToDb();
 
-// Auto-mount all routers placed under src/routes/auto
-const autoDir = path.join(__dirname, 'routes', 'auto');
+// Routes
+app.use('/api/users', userRouter);
+app.use('/api/daytypes', dayTypeRouter);
+app.use('/api/musics', musicRouter);
+app.use('/api/alarms', alarmRouter);
+app.use('/api/genres', genreRouter);
+app.use('/api/seed', seedRouter);
 
-if (fs.existsSync(autoDir)) {
-  const files = fs.readdirSync(autoDir).filter(f => f.endsWith('.route.js'));
+app.get('/', (req, res) => {
+  res.send('Hello from Backend API');
+});
 
-  for (const f of files) {
-    const full = path.join(autoDir, f);
-    const mod = require(full);
-    const router = mod.default || mod;
-
-    if (router) app.use('/api', router);
-  }
-}
-
-app.use(errorHandler);
 export default app;

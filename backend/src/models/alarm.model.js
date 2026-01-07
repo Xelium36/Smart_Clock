@@ -2,66 +2,32 @@ import mongoose from "mongoose";
 
 const alarmSchema = new mongoose.Schema(
   {
-    userId: {
-      type: String,
-      required: true,
-      index: true,
-    },
-    label: {
-      type: String,
-      required: true,
-    },
-    time_start_interv: {
-      type: String, 
-      required: true,
-    },
-    duration_interv: {
-      type: String, 
-      required: true,
-    },
-    vibration: {
-      type: Boolean,
-      default: true,
-    },
-    enabled: {
-      type: Boolean,
-      default: true,
-    },
-    snooze:{
-      type: Boolean,
-      default: false,
-    }
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Users', required: true },
+    label: { type: String, default: "Réveil" },
+    
+    // PDF: "date. ini" (Heure du coucher)
+    bedTime: { type: String, required: true }, 
+
+    // PDF: "date reveil" (Heure cible)
+    targetWakeUpTime: { type: String, required: true },
+
+    // Résultat du calcul intelligent
+    scheduledWakeUpTime: { type: Date },
+
+    dayTypeId: { type: mongoose.Schema.Types.ObjectId, ref: 'DayType' },
+    musicId: { type: mongoose.Schema.Types.ObjectId, ref: 'Music' },
+
+    // PDF: "Max acceptable-time interval"
+    duration_interv: { type: String, default: "30" },
+
+    vibration: { type: Boolean, default: true },
+    
+    // PDF: "SHODE" (Snooze)
+    snooze: { type: Boolean, default: false },
+
+    enabled: { type: Boolean, default: true }
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Alarm = mongoose.model("Alarm", alarmSchema);
-
-export function getAllAlarmsByUser(userId) {
-  return alarms.filter(a => a.userId === userId);
-}
-
-export function getAlarm(userId, alarmId) {
-  return alarms.find(a => a.userId === userId && a.id === alarmId);
-}
-
-export function createAlarm(data) {
-  const newAlarm = { id: Date.now().toString(), ...data };
-  alarms.push(newAlarm);
-  return newAlarm;
-}
-
-export function updateAlarm(userId, alarmId, updates) {
-  const idx = alarms.findIndex(a => a.userId === userId && a.id === alarmId);
-  if (idx === -1) return null;
-  alarms[idx] = { ...alarms[idx], ...updates };
-  return alarms[idx];
-}
-
-export function deleteAlarm(userId, alarmId) {
-  const before = alarms.length;
-  alarms = alarms.filter(a => !(a.userId === userId && a.id === alarmId));
-  return alarms.length < before;
-}
+export default mongoose.model("Alarm", alarmSchema);
