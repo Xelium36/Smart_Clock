@@ -10,7 +10,7 @@ import { DayConfig } from "./pages/DayConfig";
 import AlarmRingingModal from "./components/AlarmRingingModal";
 
 import "./app.css";
-import { getUser } from "./utils/auth";
+import { getUser, logout } from "./utils/auth";
 import { Login } from "./pages/Login";
 
 
