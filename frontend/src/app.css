@@ -1,0 +1,88 @@
+/* frontend/src/app.css */
+#root {
+  max-width: 1280px;
+  margin: 0 auto; 
+  padding: 2rem;
+  text-align: center;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #242424;
+  color: rgba(255, 255, 255, 0.87);
+}
+
+/* Le style des "Cartes" (Cadres gris) */
+.card {
+  background-color: #1a1a1a;
+  padding: 2em;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+  margin: 20px auto;
+  max-width: 500px; 
+}
+
+/* Les champs de saisie (Inputs et Selects) */
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #333;
+  color: white;
+  font-size: 1em;
+  box-sizing: border-box; 
+}
+
+input:focus, select:focus {
+  outline: 2px solid #646cff;
+  border-color: #646cff;
+}
+
+/* labels */
+label {
+  display: block;
+  text-align: left;
+  font-weight: bold;
+  color: #ccc;
+  font-size: 0.9em;
+}
+
+/* Le bouton */
+button {
+  border-radius: 8px;
+  border: 1px solid #646cff;
+  padding: 0.8em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  
+  /* C'EST ICI QUE LA COULEUR EST RÉGLÉE */
+  background-color: #646cff; /* Fond Bleu */
+  color: white;              /* Texte Blanc */
+  
+  cursor: pointer;
+  transition: background-color 0.25s;
+  width: 100%;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #535bf2; /* Bleu foncé au survol */
+  border-color: #535bf2;
+}
+
+/* Menu de navigation */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 30px;
+}
