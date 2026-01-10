@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { CURRENT_USER_ID } from "../app";
+import { getUser } from "../utils/auth";
+const userId = getUser()?.id;
+
 
 export function MyAlarms() {
   const [alarms, setAlarms] = useState([]);
 
   useEffect(() => {
-    if (!CURRENT_USER_ID) return;
+    if (!userId) return;
 
-    fetch(`/api/alarms/user/${CURRENT_USER_ID}`)
+    fetch(`/api/alarms/user/${userId}`)
       .then((res) => res.json())
       .then(setAlarms)
       .catch(console.error);

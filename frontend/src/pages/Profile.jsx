@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { CURRENT_USER_ID } from '../app';
+import { getUser } from "../utils/auth"; // adapte le chemin si besoin
+
 
 export function Profile() {
   const [user, setUser] = useState(null);
+  const userId = getUser()?.id;
 
   useEffect(() => {
-    if (!CURRENT_USER_ID) return;
-    fetch(`/api/users/${CURRENT_USER_ID}`)
+    if (!userId) return;
+    fetch(`/api/users/${userId}`)
       .then(res => res.json())
       .then(setUser)
       .catch(console.error);

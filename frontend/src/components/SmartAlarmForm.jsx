@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CURRENT_USER_ID } from '../app';
+import { getUser } from "../utils/auth"; // adapte le chemin si besoin
 import { useNavigate } from 'react-router-dom';
 
 export function SmartAlarmForm() {
@@ -105,7 +105,7 @@ export function SmartAlarmForm() {
     e.preventDefault();
     const smartDate = calculateSmartWakeUp(bedTime, wakeUpTime);
     
-    const payload = { userId: CURRENT_USER_ID, bedTime, targetWakeUpTime: wakeUpTime, scheduledWakeUpTime: smartDate, dayTypeId: selectedDayType, musicId: selectedMusic, label: alarmName };
+    const payload = { userId: userId, bedTime, targetWakeUpTime: wakeUpTime, scheduledWakeUpTime: smartDate, dayTypeId: selectedDayType, musicId: selectedMusic, label: alarmName };
     await fetch('/api/alarms', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
     navigate('/alarms');
   };
