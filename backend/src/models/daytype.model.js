@@ -6,7 +6,6 @@ const dayTypeSchema = new mongoose.Schema(
     isWorkingDay: { type: Boolean, default: true },
     defaultGenreId: { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' },
     
-    // CHANGEMENT ICI : C'est maintenant un tableau [] de références
     musics: [{ 
       type: mongoose.Schema.Types.ObjectId, 
       ref: 'Music' 

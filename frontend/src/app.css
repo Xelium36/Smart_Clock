@@ -1,7 +1,7 @@
 /* frontend/src/app.css */
 #root {
   max-width: 1280px;
-  margin: 0 auto; /* Centre le contenu horizontalement */
+  margin: 0 auto; 
   padding: 2rem;
   text-align: center;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
@@ -24,7 +24,7 @@ body {
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.5);
   margin: 20px auto;
-  max-width: 500px; /* Limite la largeur pour que ce soit élégant */
+  max-width: 500px; 
 }
 
 /* Les champs de saisie (Inputs et Selects) */
@@ -38,7 +38,7 @@ input, select {
   background-color: #333;
   color: white;
   font-size: 1em;
-  box-sizing: border-box; /* Important pour ne pas dépasser */
+  box-sizing: border-box; 
 }
 
 input:focus, select:focus {
@@ -46,7 +46,7 @@ input:focus, select:focus {
   border-color: #646cff;
 }
 
-/* Les labels */
+/* labels */
 label {
   display: block;
   text-align: left;
