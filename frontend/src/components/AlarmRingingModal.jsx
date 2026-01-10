@@ -5,9 +5,19 @@ export default function AlarmRingingModal({ alarm, onStop, onSnooze }) {
   const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
+    console.log("🎵 alarm music payload:", alarm?.music);
     if (!alarm) return;
 
-    const a = new Audio("/sounds/Reveil_electronique.mp3");
+    // ✅ Utilise la musique envoyée par le backend, sinon fallback
+    const src = alarm?.music?.filePath || "/sounds/piano.mp3";
+
+    // Stoppe l'ancienne musique si une autre alarme arrive
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+
+    const a = new Audio(src);
     a.loop = true;
     a.volume = 0.9;
     audioRef.current = a;
@@ -20,7 +30,7 @@ export default function AlarmRingingModal({ alarm, onStop, onSnooze }) {
       a.pause();
       a.currentTime = 0;
     };
-  }, [alarm?.id]);
+  }, [alarm?.id]); // si l'id change => nouvelle alarme => nouvelle musique
 
   if (!alarm) return null;
 
@@ -44,8 +54,16 @@ export default function AlarmRingingModal({ alarm, onStop, onSnooze }) {
           <strong>{alarm.label || "Réveil"}</strong>
         </div>
 
-        <div style={{ marginTop: 8, opacity: 0.85, fontSize: 14 }}>
-          Déclenchée : {alarm.scheduledWakeUpTime ? new Date(alarm.scheduledWakeUpTime).toLocaleString() : ""}
+        {/* ✅ Affiche la musique choisie */}
+        <div style={{ marginTop: 8, opacity: 0.9, fontSize: 14 }}>
+          🎵 {alarm.music?.name || "Musique par défaut"}
+        </div>
+
+        <div style={{ marginTop: 6, opacity: 0.85, fontSize: 14 }}>
+          Déclenchée :{" "}
+          {alarm.scheduledWakeUpTime
+            ? new Date(alarm.scheduledWakeUpTime).toLocaleString()
+            : ""}
         </div>
 
         {blocked && (

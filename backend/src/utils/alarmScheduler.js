@@ -16,21 +16,50 @@ export function scheduleAlarm(alarmDoc) {
 
   const ringAt = new Date(alarmDoc.scheduledWakeUpTime);
   if (Number.isNaN(ringAt.getTime())) return;
-  if (ringAt.getTime() <= Date.now()) return; // déjà passé
+  if (ringAt.getTime() <= Date.now()) return;
 
-  const job = schedule.scheduleJob(ringAt, () => {
+  const job = schedule.scheduleJob(ringAt, async () => {
     const io = getIO();
-    io.to(String(alarmDoc.userId)).emit("alarm:triggered", {
+
+    // 🔥 Recharge l'alarme avec la musique peuplée
+    const alarm = await Alarm.findById(alarmId)
+      .populate("musicId")
+      .populate("dayTypeId");
+
+    if (!alarm) return;
+
+    io.to(String(alarm.userId)).emit("alarm:triggered", {
       id: alarmId,
-      label: alarmDoc.label,
+      label: alarm.label,
       scheduledWakeUpTime: ringAt.toISOString(),
-      musicId: alarmDoc.musicId || null,
-      dayTypeId: alarmDoc.dayTypeId || null,
+
+      //  musique 
+      music: alarm.musicId
+        ? {
+            name: alarm.musicId.name,
+            filePath: alarm.musicId.filePath,
+          }
+        : null,
+
+      // profil
+      profile: alarm.dayTypeId
+        ? {
+            id: alarm.dayTypeId._id,
+            name: alarm.dayTypeId.name,
+          }
+        : null,
     });
   });
 
   jobsByAlarmId.set(alarmId, job);
-  console.log("Scheduling alarm", alarmId, "for", ringAt.toISOString(), "user", String(alarmDoc.userId));
+  console.log(
+    "Scheduling alarm",
+    alarmId,
+    "for",
+    ringAt.toISOString(),
+    "user",
+    String(alarmDoc.userId)
+  );
 }
 
 export function cancelAlarm(alarmId) {

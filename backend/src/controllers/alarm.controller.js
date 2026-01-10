@@ -1,6 +1,12 @@
 import Alarm from "../models/alarm.model.js";
 import { nextDateAtTimeHHmm } from "../utils/time.js";
 import { scheduleAlarm } from "../utils/alarmScheduler.js";
+import DayType from "../models/daytype.model.js";
+import Music from "../models/music.model.js";
+import { cancelAlarm } from "../utils/alarmScheduler.js";
+
+
+
 
 export async function createOneAlarm(req, res, next) {
   try {
@@ -12,6 +18,24 @@ export async function createOneAlarm(req, res, next) {
     // Si front ne fournit pas scheduledWakeUpTime, on le calcule ici
     if (!body.scheduledWakeUpTime) {
       body.scheduledWakeUpTime = nextDateAtTimeHHmm(body.targetWakeUpTime);
+    }
+
+    // Musique
+    if (!body.musicId && body.dayTypeId) {
+      const dayType = await DayType.findById(body.dayTypeId).populate("musics");
+
+      if (!dayType) {
+        throw new Error("DayType (profil) not found");
+      }
+
+      if (!dayType.musics || dayType.musics.length === 0) {
+        throw new Error("No musics in this profile playlist");
+      }
+
+      const randomMusic =
+        dayType.musics[Math.floor(Math.random() * dayType.musics.length)];
+
+      body.musicId = randomMusic._id;
     }
 
     const alarm = await Alarm.create(body);
@@ -67,6 +91,21 @@ export async function snoozeAlarm(req, res, next) {
     scheduleAlarm(alarm);
 
     res.json(alarm);
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function deleteAlarm(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const alarm = await Alarm.findByIdAndDelete(id);
+    if (!alarm) return res.status(404).json({ message: "Alarm not found" });
+
+    cancelAlarm(id);
+
+    res.json({ ok: true });
   } catch (e) {
     next(e);
   }

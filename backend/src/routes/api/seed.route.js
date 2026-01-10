@@ -18,13 +18,14 @@ router.get('/', async (req, res) => {
 
     // 2. Musiques
     const m = await Music.insertMany([
-      { name: "Chant des oiseaux 🐦", duration: "05:00" },
-      { name: "Rivière calme 🌊", duration: "10:00" },
-      { name: "Piano Doux 🎹", duration: "04:30" },
-      { name: "Rock Énergique 🎸", duration: "03:00" },
-      { name: "Pluie sur le toit 🌧️", duration: "15:00" },
-      { name: "Techno Sport 🏃", duration: "05:00" }
-    ]);
+    { name: "Chant des oiseaux 🐦", duration: "05:00", filePath: "/sounds/birds.mp3" },
+    { name: "Rivière calme 🌊", duration: "10:00", filePath: "/sounds/water.mp3" },
+    { name: "Piano Doux 🎹", duration: "04:30", filePath: "/sounds/piano.mp3" },
+    { name: "Rock Énergique 🎸", duration: "03:00", filePath: "/sounds/rock.mp3" },
+    { name: "Pluie sur le toit 🌧️", duration: "15:00", filePath: "/sounds/rain.mp3" },
+    { name: "Techno Sport 🏃", duration: "05:00", filePath: "/sounds/techno.mp3" }
+  ]);
+
 
     // 3. Types de journée
     await DayType.insertMany([
