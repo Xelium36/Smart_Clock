@@ -1,22 +1,76 @@
-import { useState } from "react";
-import { setAuth } from "../utils/auth";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { setAuth, getUser, logout } from "../utils/auth";
 
 export function Login() {
+  const navigate = useNavigate();
+
+  // mode : login/register
   const [mode, setMode] = useState("login"); // "login" | "register"
   const isRegister = mode === "register";
+
+  // utilisateur actuel (si déjà connecté)
+  const [user, setUser] = useState(() => getUser());
 
   const [email, setEmail] = useState("julie@example.com");
   const [password, setPassword] = useState("secret");
 
-  // champs register
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
-  const [dateNaissance, setDateNaissance] = useState(""); // YYYY-MM-DD
+  const [dateNaissance, setDateNaissance] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+  useEffect(() => {
+    const refresh = () => setUser(getUser());
+    window.addEventListener("auth-changed", refresh);
+    return () => window.removeEventListener("auth-changed", refresh);
+  }, []);
+
+  if (user?.id) {
+    return (
+      <div className="card" style={{ maxWidth: 700, margin: "0 auto" }}>
+        <h2 style={{ marginBottom: 10 }}>👤 Compte</h2>
+
+        <div style={{ marginBottom: 14, color: "#ccc", fontWeight: 700 }}>
+          ✅ Connecté en tant que :{" "}
+          <span style={{ color: "white" }}>
+            {user?.prenom || user?.email || user.id}
+          </span>
+        </div>
+
+        <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
+          <button
+            onClick={() => navigate("/alarms")}
+            style={{ padding: "10px 16px", borderRadius: 12, fontWeight: 800, cursor: "pointer" }}
+          >
+            ⏰ Mes alarmes
+          </button>
+
+          <button
+            onClick={() => {
+              logout();
+            }}
+            style={{
+              padding: "10px 16px",
+              borderRadius: 12,
+              fontWeight: 800,
+              cursor: "pointer",
+            }}
+          >
+            🚪 Se déconnecter
+          </button>
+        </div>
+
+        <p style={{ marginTop: 14, opacity: 0.75, textAlign: "center" }}>
+          Tu peux te déconnecter ici, ou aller gérer tes alarmes.
+        </p>
+      </div>
+    );
+  }
 
   const submit = async (e) => {
     e.preventDefault();
@@ -24,9 +78,7 @@ export function Login() {
     setLoading(true);
 
     try {
-      const url = isRegister
-        ? `${API_URL}/api/auth/register`
-        : `${API_URL}/api/auth/login`;
+      const url = isRegister ? `${API_URL}/api/auth/register` : `${API_URL}/api/auth/login`;
 
       const payload = isRegister
         ? {
@@ -38,7 +90,6 @@ export function Login() {
           }
         : { email, password };
 
-      // validations simples côté front
       if (isRegister && !dateNaissance) {
         setError("Date de naissance obligatoire.");
         setLoading(false);
@@ -59,7 +110,8 @@ export function Login() {
         return;
       }
 
-      setAuth(data.token, data.user); // ✅ déclenche auth-changed
+      setAuth(data.token, data.user);
+      navigate("/"); 
     } catch (err) {
       setError("Erreur réseau.");
     } finally {
@@ -69,11 +121,8 @@ export function Login() {
 
   return (
     <div className="card" style={{ maxWidth: 700, margin: "0 auto" }}>
-      <h2 style={{ marginBottom: 14 }}>
-        {isRegister ? "🆕 Créer un compte" : "🔐 Connexion"}
-      </h2>
+      <h2 style={{ marginBottom: 14 }}>{isRegister ? "🆕 Créer un compte" : "🔐 Connexion"}</h2>
 
-      {/* Toggle */}
       <div style={{ display: "flex", gap: 10, justifyContent: "center", marginBottom: 16 }}>
         <button
           type="button"
@@ -112,56 +161,23 @@ export function Login() {
         {isRegister && (
           <>
             <div style={{ display: "flex", gap: 10 }}>
-              <input
-                value={prenom}
-                onChange={(e) => setPrenom(e.target.value)}
-                placeholder="Prénom"
-                style={{ flex: 1 }}
-              />
-              <input
-                value={nom}
-                onChange={(e) => setNom(e.target.value)}
-                placeholder="Nom"
-                style={{ flex: 1 }}
-              />
+              <input value={prenom} onChange={(e) => setPrenom(e.target.value)} placeholder="Prénom" style={{ flex: 1 }} />
+              <input value={nom} onChange={(e) => setNom(e.target.value)} placeholder="Nom" style={{ flex: 1 }} />
             </div>
 
-            <input
-              value={dateNaissance}
-              onChange={(e) => setDateNaissance(e.target.value)}
-              type="date"
-              placeholder="Date de naissance"
-            />
+            <input value={dateNaissance} onChange={(e) => setDateNaissance(e.target.value)} type="date" />
           </>
         )}
 
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
-
-        <input
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Mot de passe"
-          type="password"
-        />
+        <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Mot de passe" type="password" />
 
         <button type="submit" disabled={loading}>
           {loading ? "..." : isRegister ? "Créer le compte" : "Se connecter"}
         </button>
       </form>
 
-      {error && (
-        <p style={{ color: "tomato", marginTop: 12, textAlign: "center" }}>
-          {error}
-        </p>
-      )}
-
-      {!error && (
-        <p style={{ opacity: 0.7, marginTop: 12, textAlign: "center" }}>
-          {isRegister
-            ? "Crée un compte puis tu seras connecté automatiquement."
-            : "Connecte-toi pour activer la gestion des alarmes et les notifications."}
-        </p>
-      )}
+      {error && <p style={{ color: "tomato", marginTop: 12, textAlign: "center" }}>{error}</p>}
     </div>
   );
 }
