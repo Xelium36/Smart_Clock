@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
+const DAY_NAMES = { 0: "Dim", 1: "Lun", 2: "Mar", 3: "Mer", 4: "Jeu", 5: "Ven", 6: "Sam" };
+
+function formatRepeatDays(arr) {
+  if (!arr || arr.length === 0) return null;
+  const order = [1,2,3,4,5,6,0];
+  return arr
+    .slice()
+    .sort((a,b)=> order.indexOf(a)-order.indexOf(b))
+    .map((d)=> DAY_NAMES[d] || d)
+    .join(", ");
+}
+
 export default function AlarmRingingModal({ alarm, onStop, onSnooze }) {
   const audioRef = useRef(null);
   const [blocked, setBlocked] = useState(false);
@@ -65,6 +77,12 @@ export default function AlarmRingingModal({ alarm, onStop, onSnooze }) {
             ? new Date(alarm.scheduledWakeUpTime).toLocaleString()
             : ""}
         </div>
+
+        {alarm.repeatDays && alarm.repeatDays.length > 0 && (
+          <div style={{ marginTop: 6, opacity: 0.85, fontSize: 14 }}>
+            🔁 Répète : {formatRepeatDays(alarm.repeatDays)}
+          </div>
+        )}
 
         {blocked && (
           <div style={styles.warning}>

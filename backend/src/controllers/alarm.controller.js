@@ -38,6 +38,26 @@ export async function createOneAlarm(req, res, next) {
       body.musicId = randomMusic._id;
     }
 
+    // Repeat days -- normalize and validate
+    if (Array.isArray(body.repeatDays)) {
+      // Filter to integers 0-6 and unique
+      const normalized = Array.from(
+        new Set(
+          body.repeatDays
+            .map((d) => Number(d))
+            .filter((n) => Number.isInteger(n) && n >= 0 && n <= 6)
+        )
+      );
+      if (normalized.length === 0) {
+        delete body.repeatDays;
+      } else {
+        body.repeatDays = normalized;
+      }
+    } else {
+      // If empty string or null from front, ensure it's removed
+      if (body.repeatDays == null || body.repeatDays === "") delete body.repeatDays;
+    }
+
     const alarm = await Alarm.create(body);
     console.log("✅ Created alarm:", {
   id: alarm._id.toString(),

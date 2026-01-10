@@ -15,6 +15,23 @@ export function SmartAlarmForm() {
   const [selectedMusic, setSelectedMusic] = useState("");
   const [possibleMusicsDisplay, setPossibleMusicsDisplay] = useState([]);
 
+  // Répétition hebdomadaire : tableau de nombres (0=Dim,1=Lun,...6=Sam)
+  const [repeatDays, setRepeatDays] = useState([]);
+
+  const WEEK = [
+    { num: 1, label: "Lun" },
+    { num: 2, label: "Mar" },
+    { num: 3, label: "Mer" },
+    { num: 4, label: "Jeu" },
+    { num: 5, label: "Ven" },
+    { num: 6, label: "Sam" },
+    { num: 0, label: "Dim" },
+  ];
+
+  const toggleDay = (num) => {
+    setRepeatDays((prev) => (prev.includes(num) ? prev.filter((d) => d !== num) : [...prev, num]));
+  };
+
   const [calculatedSmartTime, setCalculatedSmartTime] = useState(null);
   const [smartMessage, setSmartMessage] = useState("");
 
@@ -117,6 +134,7 @@ export function SmartAlarmForm() {
       dayTypeId: selectedDayType,
       musicId: selectedMusic,
       label: alarmName,
+      ...(repeatDays.length > 0 ? { repeatDays } : {}),
     };
 
     try {
@@ -210,6 +228,29 @@ export function SmartAlarmForm() {
               ? calculatedSmartTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
               : "--:--"}
           </span>
+        </div>
+
+        {/* Répétition hebdomadaire */}
+        <label style={{ marginBottom: 8, marginTop: 12 }}>Répéter</label>
+        <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+          {WEEK.map((d) => (
+            <button
+              type="button"
+              key={d.num}
+              onClick={() => toggleDay(d.num)}
+              style={{
+                padding: "6px 8px",
+                borderRadius: 6,
+                border: repeatDays.includes(d.num) ? "2px solid #ffd" : "1px solid rgba(255,255,255,0.2)",
+                background: repeatDays.includes(d.num) ? "#ffd" : "transparent",
+                color: repeatDays.includes(d.num) ? "#222" : "#fff",
+                cursor: "pointer",
+                fontWeight: 700,
+              }}
+            >
+              {d.label}
+            </button>
+          ))}
         </div>
       </div>
 

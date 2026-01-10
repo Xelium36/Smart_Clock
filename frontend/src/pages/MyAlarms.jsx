@@ -2,6 +2,18 @@ import { useEffect, useState } from "react";
 import { getUser } from "../utils/auth";
 const userId = getUser()?.id;
 
+const DAY_NAMES = { 0: "Dim", 1: "Lun", 2: "Mar", 3: "Mer", 4: "Jeu", 5: "Ven", 6: "Sam" };
+
+function formatRepeatDays(arr) {
+  if (!arr || arr.length === 0) return "Unique";
+  // Order days as Mon..Sun for display (1..6,0)
+  const order = [1,2,3,4,5,6,0];
+  return arr
+    .slice()
+    .sort((a,b)=> order.indexOf(a)-order.indexOf(b))
+    .map((d)=> DAY_NAMES[d] || d)
+    .join(", ");
+}
 
 export function MyAlarms() {
   const [alarms, setAlarms] = useState([]);
@@ -97,6 +109,7 @@ export function MyAlarms() {
                     })
                   : "—"}
               </div>
+              <div>🔁 Répète : {a.repeatDays && a.repeatDays.length > 0 ? formatRepeatDays(a.repeatDays) : "Unique"}</div>
               <div style={{ fontSize: "0.9em", color: "#aaa" }}>
                 🎵 {a.musicId?.name || "Aucune"}
               </div>

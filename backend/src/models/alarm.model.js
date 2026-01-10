@@ -25,7 +25,10 @@ const alarmSchema = new mongoose.Schema(
     // PDF: "SHODE" (Snooze)
     snooze: { type: Boolean, default: false },
 
-    enabled: { type: Boolean, default: true }
+    enabled: { type: Boolean, default: true },
+
+    // Jours de répétition (0 = Dimanche, 1 = Lundi, ..., 6 = Samedi)
+    repeatDays: { type: [Number], default: [] }
   },
   { timestamps: true }
 );
